@@ -16,7 +16,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen pb-16">
+<body class="bg-slate-100 text-slate-900 min-h-screen pb-16">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 glass-panel border-b border-slate-200/80 px-6 py-4 flex items-center justify-between">
@@ -65,7 +65,7 @@
       </div>
     </div>
 
-    <!-- Brand Selection Tabs -->
+    <!-- Brand Tabs -->
     <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-2">
       <button onclick="selectBrand('dettol')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all bg-blue-600 text-white shadow-sm" data-brand="dettol">Dettol BD</button>
       <button onclick="selectBrand('lux')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="lux">Lux</button>
@@ -83,12 +83,12 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold tracking-tight text-slate-900">Active Ad Creatives</h2>
         <span id="loadingSpinner" class="hidden text-sm text-blue-600 flex items-center gap-2">
-          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Fetching live Meta ad library data...
+          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Loading visual ad cards...
         </span>
       </div>
 
       <div id="adGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Ad cards inject here -->
+        <!-- Live embedded ad cards inject here -->
       </div>
     </div>
 
@@ -125,7 +125,6 @@
             <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-slate-200">
               <i data-lucide="info" class="w-10 h-10 text-slate-400 mx-auto mb-3"></i>
               <p class="text-slate-600 font-medium">No active ads currently found for ${brandKey.toUpperCase()}</p>
-              <p class="text-xs text-slate-400 mt-1">Verify active status on Meta Ad Library.</p>
             </div>
           `;
           lucide.createIcons();
@@ -137,7 +136,6 @@
           <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-red-200">
             <i data-lucide="alert-circle" class="w-10 h-10 text-red-500 mx-auto mb-3"></i>
             <p class="text-red-600 font-medium">Error loading Meta ad data</p>
-            <p class="text-xs text-slate-400 mt-1">Ensure server is running and access token is valid.</p>
           </div>
         `;
         lucide.createIcons();
@@ -147,41 +145,30 @@
     function renderGrid(ads) {
       const grid = document.getElementById('adGrid');
       grid.innerHTML = ads.map(ad => `
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col justify-between">
-          <div class="p-5 space-y-4">
-            <div class="flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+          
+          <!-- Embedded Live Meta Creative Snapshot Frame -->
+          <div class="w-full bg-slate-50 relative border-b border-slate-100" style="height: 520px;">
+            <iframe 
+              src="${ad.snapshotUrl}" 
+              class="w-full h-full border-0" 
+              loading="lazy" 
+              scrolling="no" 
+              title="Meta Ad ${ad.id}">
+            </iframe>
+          </div>
+
+          <!-- Top Meta Bar inside Card -->
+          <div class="p-4 bg-white flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
               </span>
-              <span class="text-xs text-slate-400">ID: ${ad.id}</span>
+              <span class="font-medium text-slate-700">${ad.pageName}</span>
             </div>
-
-            <a href="${ad.brandPageUrl}" target="_blank" class="block group">
-              <h3 class="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors flex items-center gap-1.5">
-                ${ad.pageName}
-                <i data-lucide="external-link" class="w-3 h-3 text-slate-400"></i>
-              </h3>
-              <p class="text-xs text-slate-400">Launched: ${new Date(ad.creationTime).toLocaleDateString()}</p>
-            </a>
-
-            <!-- Ad Copy Text Box -->
-            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 max-h-36 overflow-y-auto">
-              <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">${ad.bodyText}</p>
-            </div>
+            <span class="text-slate-400">ID: ${ad.id}</span>
           </div>
 
-          <!-- Action Bar with Direct Library Link Fallback -->
-          <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>Platforms: ${ad.platforms.join(', ')}</span>
-            <div class="flex items-center gap-3">
-              <a href="${ad.snapshotUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-semibold hover:underline flex items-center gap-1">
-                API Link <i data-lucide="external-link" class="w-3 h-3"></i>
-              </a>
-              <a href="${ad.directLibraryUrl}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 text-white px-2.5 py-1 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-1">
-                Open Meta Library <i data-lucide="chevron-right" class="w-3 h-3"></i>
-              </a>
-            </div>
-          </div>
         </div>
       `).join('');
       lucide.createIcons();
