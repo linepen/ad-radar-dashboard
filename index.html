@@ -18,10 +18,6 @@
 </head>
 <body class="bg-slate-100 text-slate-900 min-h-screen pb-16">
 
-  <!-- Facebook SDK for Official Ad Snapshot Rendering -->
-  <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v20.0"></script>
-
   <!-- Header -->
   <header class="sticky top-0 z-40 glass-panel border-b border-slate-200/80 px-6 py-4 flex items-center justify-between">
     <div class="flex items-center gap-3">
@@ -69,7 +65,7 @@
       </div>
     </div>
 
-    <!-- Brand Tabs -->
+    <!-- Brand Selection Tabs -->
     <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-2">
       <button onclick="selectBrand('dettol')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all bg-blue-600 text-white shadow-sm" data-brand="dettol">Dettol BD</button>
       <button onclick="selectBrand('lux')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="lux">Lux</button>
@@ -87,12 +83,12 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold tracking-tight text-slate-900">Active Ad Creatives</h2>
         <span id="loadingSpinner" class="hidden text-sm text-blue-600 flex items-center gap-2">
-          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Rendering live Meta visual cards...
+          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Fetching live Meta ad library data...
         </span>
       </div>
 
       <div id="adGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Live Meta Embed elements inject here -->
+        <!-- Visual ad cards render here -->
       </div>
     </div>
 
@@ -148,34 +144,51 @@
 
     function renderGrid(ads) {
       const grid = document.getElementById('adGrid');
-      
       grid.innerHTML = ads.map(ad => `
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-4 flex flex-col justify-between">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
           
-          <!-- Native Meta Visual Ad Container -->
-          <div class="fb-post" 
-               data-href="${ad.snapshotUrl}" 
-               data-width="100%" 
-               data-show-text="true">
+          <div class="p-4 space-y-3">
+            <!-- Header Status Bar -->
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+              </span>
+              <span class="text-xs text-slate-400">Library ID: ${ad.id}</span>
+            </div>
+
+            <!-- Page Title & Launch Info -->
+            <div>
+              <h3 class="font-bold text-slate-900 text-sm">${ad.pageName}</h3>
+              <p class="text-xs text-slate-400">Started running on ${new Date(ad.creationTime).toLocaleDateString()}</p>
+            </div>
+
+            <!-- Ad Copy Text Box -->
+            <div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50 p-3 rounded-xl max-h-28 overflow-y-auto border border-slate-100">
+              ${ad.bodyText}
+            </div>
+
+            <!-- Visual Creative Media Card -->
+            <div class="w-full bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center min-h-[220px]">
+              ${ad.imageUrl ? `
+                <img src="${ad.imageUrl}" alt="Meta Ad Creative" class="w-full h-auto max-h-[340px] object-cover" />
+              ` : `
+                <div class="p-8 text-center text-slate-400 flex flex-col items-center gap-2">
+                  <i data-lucide="image" class="w-8 h-8 text-slate-300"></i>
+                  <p class="text-xs">Visual preview restricted by Meta API permissions.</p>
+                </div>
+              `}
+            </div>
           </div>
 
-          <!-- Native Card Details -->
-          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span class="inline-flex items-center gap-1.5 font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
-            </span>
-            <span>ID: ${ad.id}</span>
+          <!-- Platform Footer -->
+          <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span>Platforms: ${ad.platforms.join(', ')}</span>
           </div>
 
         </div>
       `).join('');
 
       lucide.createIcons();
-
-      // Trigger Meta SDK parser to render images and video embeds natively
-      if (window.FB && window.FB.XFBML) {
-        window.FB.XFBML.parse(grid);
-      }
     }
 
     function selectBrand(brandKey) {
