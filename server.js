@@ -10,15 +10,15 @@ app.use(express.static(__dirname));
 const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
 
 const COMPETITOR_PAGES = {
-  'dettol': { id: '316661708412733', name: 'Dettol Bangladesh', logo: 'https://logo.clearbit.com/dettol.com.bd' },
-  'lux': { id: '198681730247947', name: 'Lux Bangladesh', logo: 'https://logo.clearbit.com/unilever.com' },
-  'meril': { id: '1453276111597128', name: 'Meril', logo: 'https://logo.clearbit.com/squaregroup.com' },
-  'lifebuoy': { id: '407422362695986', name: 'Lifebuoy', logo: 'https://logo.clearbit.com/lifebuoy.com' },
-  'sepnil': { id: '1713574818891891', name: 'Sepnil', logo: 'https://logo.clearbit.com/squaregroup.com' },
-  'rin': { id: '191136358135737', name: 'Rin', logo: 'https://logo.clearbit.com/unilever.com' },
-  'lizol': { id: '1392439847477431', name: 'Lizol Bangladesh', logo: 'https://logo.clearbit.com/reckitt.com' },
-  'himalaya': { id: '844472932311946', name: 'Himalaya Bangladesh', logo: 'https://logo.clearbit.com/himalayawellness.in' },
-  'vim': { id: '544329592579649', name: 'Vim Bangladesh', logo: 'https://logo.clearbit.com/unilever.com' }
+  'dettol': { id: '316661708412733', name: 'Dettol Bangladesh' },
+  'lux': { id: '198681730247947', name: 'Lux Bangladesh' },
+  'meril': { id: '1453276111597128', name: 'Meril' },
+  'lifebuoy': { id: '407422362695986', name: 'Lifebuoy' },
+  'sepnil': { id: '1713574818891891', name: 'Sepnil' },
+  'rin': { id: '191136358135737', name: 'Rin' },
+  'lizol': { id: '1392439847477431', name: 'Lizol Bangladesh' },
+  'himalaya': { id: '844472932311946', name: 'Himalaya Bangladesh' },
+  'vim': { id: '544329592579649', name: 'Vim Bangladesh' }
 };
 
 app.get('/api/ads/:brandKey', async (req, res) => {
@@ -43,7 +43,6 @@ app.get('/api/ads/:brandKey', async (req, res) => {
     });
 
     const formattedAds = (response.data.data || []).map(ad => {
-      // Extract direct image thumbnail URL from API payload or snapshot fallback
       let imageUrl = null;
       if (ad.images && ad.images.length > 0) {
         imageUrl = ad.images[0].original_image_url || ad.images[0].resized_image_url;
@@ -77,28 +76,5 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`); }); ```  ---  ### Step 2: Update `index.html` on GitHub  This updated `index.html` renders native Meta-styled ad cards[cite: 18]. It displays the brand header, launch date, post text, and the image creative thumbnail[cite: 18]—matching the look of the Meta Ad Library page without broken embeds or extra action buttons[cite: 17, 18].  Replace all code in `index.html` on GitHub with this:  ```html <!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Ad Radar — Competitor Ad Intelligence</title> <script src="https://cdn.tailwindcss.com"></script> <script src="https://unpkg.com/lucide@latest"></script> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> <style> body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; } .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); } </style> </head> <body class="bg-slate-100 text-slate-900 min-h-screen pb-16">  <!-- Header --> <header class="sticky top-0 z-40 glass-panel border-b border-slate-200/80 px-6 py-4 flex items-center justify-between"> <div class="flex items-center gap-3"> <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-sm"> <i data-lucide="radar" class="w-5 h-5"></i> </div> <div> <h1 class="font-semibold text-lg tracking-tight">Ad Radar Intelligence</h1> <p class="text-xs text-slate-500">Live Meta Ad Library Competitor Tracker (Bangladesh FMCG)</p> </div> </div>  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200"> <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Meta API Connected </div> </header>  <main class="max-w-7xl mx-auto px-6 py-8 space-y-6">  <!-- KPI Cards --> <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"> <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"> <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Competitor Ads</p> <p id="kpiTotalAds" class="text-3xl font-bold mt-2 text-slate-900">--</p> <p class="text-xs text-slate-400 mt-1">Fetched live from Meta Library</p> </div>  <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"> <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Selected Brand</p> <p id="kpiBrandName" class="text-3xl font-bold mt-2 text-blue-600">Dettol</p> <p class="text-xs text-slate-400 mt-1">Active filter focus</p> </div>  <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"> <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Tracked Brands</p> <p class="text-3xl font-bold mt-2 text-slate-900">9 Brands</p> <p class="text-xs text-slate-400 mt-1">FMCG & Hygiene Portfolio</p> </div>  <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"> <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Primary Market</p> <p class="text-3xl font-bold mt-2 text-slate-900">BD 🇧🇩</p> <p class="text-xs text-slate-400 mt-1">Bangladesh Geographic Target</p> </div> </div>  <!-- Brand Selection Tabs --> <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-2"> <button onclick="selectBrand('dettol')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all bg-blue-600 text-white shadow-sm" data-brand="dettol">Dettol BD</button> <button onclick="selectBrand('lux')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="lux">Lux</button> <button onclick="selectBrand('meril')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="meril">Meril</button> <button onclick="selectBrand('lifebuoy')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="lifebuoy">Lifebuoy</button> <button onclick="selectBrand('sepnil')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="sepnil">Sepnil</button> <button onclick="selectBrand('rin')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="rin">Rin</button> <button onclick="selectBrand('lizol')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="lizol">Lizol</button> <button onclick="selectBrand('himalaya')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="himalaya">Himalaya</button> <button onclick="selectBrand('vim')" class="brand-tab px-4 py-2 rounded-xl text-sm font-medium transition-all text-slate-600 hover:bg-slate-100" data-brand="vim">Vim</button> </div>  <!-- Active Creative Grid --> <div class="space-y-4"> <div class="flex items-center justify-between"> <h2 class="text-xl font-semibold tracking-tight text-slate-900">Active Ad Creatives</h2> <span id="loadingSpinner" class="hidden text-sm text-blue-600 flex items-center gap-2"> <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Fetching live Meta ad library data... </span> </div>  <div id="adGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> <!-- Visual ad cards render here --> </div> </div>  </main>  <script> document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); selectBrand('dettol'); });  async function loadBrandAds(brandKey) { const grid = document.getElementById('adGrid'); const spinner = document.getElementById('loadingSpinner'); const kpiTotal = document.getElementById('kpiTotalAds'); const kpiBrand = document.getElementById('kpiBrandName');  spinner.classList.remove('hidden'); grid.innerHTML = ''; kpiBrand.innerText = brandKey.toUpperCase();  try { const response = await fetch(`/api/ads/${brandKey}`);
-        const data = await response.json();
-
-        spinner.classList.add('hidden');
-
-        if (data.success && data.ads && data.ads.length > 0) {
-          kpiTotal.innerText = data.count;
-          renderGrid(data.ads);
-        } else {
-          kpiTotal.innerText = '0';
-          grid.innerHTML = `
-            <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-slate-200">
-              <i data-lucide="info" class="w-10 h-10 text-slate-400 mx-auto mb-3"></i>
-              <p class="text-slate-600 font-medium">No active ads currently found for ${brandKey.toUpperCase()}</p>
-            </div>
-          `;
-          lucide.createIcons();
-        }
-      } catch (err) {
-        spinner.classList.add('hidden');
-        console.error('Fetch error:', err);
-        grid.innerHTML = `
-          <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-red-200">
-            <i data-lucide="alert-circle" class="w-10 h-10 text-red-500 mx-auto mb-3"></i>
-            <p class="text-red-600 font-medium
+  console.log(`Server running on port ${PORT}`);
+});
