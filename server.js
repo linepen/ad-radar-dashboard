@@ -9,7 +9,6 @@ app.use(express.static(__dirname));
 
 const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
 
-// Exact Page IDs for tracked brands in Bangladesh
 const COMPETITOR_PAGES = {
   'dettol': { id: '316661708412733', name: 'Dettol Bangladesh' },
   'lux': { id: '198681730247947', name: 'Lux Bangladesh' },
@@ -50,6 +49,8 @@ app.get('/api/ads/:brandKey', async (req, res) => {
       creationTime: ad.ad_creation_time,
       bodyText: ad.ad_creative_bodies ? ad.ad_creative_bodies[0] : 'No caption text available.',
       snapshotUrl: ad.ad_snapshot_url,
+      // Direct Web Library URL fallback for reliable snapshot loading
+      directLibraryUrl: `https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=BD&view_all_page_id=${ad.page_id}`,
       platforms: ad.publisher_platforms || ['facebook', 'instagram'],
       brandPageUrl: `https://www.facebook.com/${ad.page_id}`
     }));
