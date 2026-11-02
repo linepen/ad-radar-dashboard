@@ -9,11 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
+    .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-900 min-h-screen pb-16">
@@ -83,12 +79,12 @@
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold tracking-tight text-slate-900">Active Ad Creatives</h2>
         <span id="loadingSpinner" class="hidden text-sm text-blue-600 flex items-center gap-2">
-          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Fetching live Meta ad library data...
+          <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Loading ad cards...
         </span>
       </div>
 
       <div id="adGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Visual ad cards render here -->
+        <!-- Rendered cards inject here -->
       </div>
     </div>
 
@@ -145,44 +141,29 @@
     function renderGrid(ads) {
       const grid = document.getElementById('adGrid');
       grid.innerHTML = ads.map(ad => `
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between p-5 space-y-4">
           
-          <div class="p-4 space-y-3">
-            <!-- Header Status Bar -->
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
-              </span>
-              <span class="text-xs text-slate-400">Library ID: ${ad.id}</span>
-            </div>
-
-            <!-- Page Title & Launch Info -->
-            <div>
-              <h3 class="font-bold text-slate-900 text-sm">${ad.pageName}</h3>
-              <p class="text-xs text-slate-400">Started running on ${new Date(ad.creationTime).toLocaleDateString()}</p>
-            </div>
-
-            <!-- Ad Copy Text Box -->
-            <div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50 p-3 rounded-xl max-h-28 overflow-y-auto border border-slate-100">
-              ${ad.bodyText}
-            </div>
-
-            <!-- Visual Creative Media Card -->
-            <div class="w-full bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center min-h-[220px]">
-              ${ad.imageUrl ? `
-                <img src="${ad.imageUrl}" alt="Meta Ad Creative" class="w-full h-auto max-h-[340px] object-cover" />
-              ` : `
-                <div class="p-8 text-center text-slate-400 flex flex-col items-center gap-2">
-                  <i data-lucide="image" class="w-8 h-8 text-slate-300"></i>
-                  <p class="text-xs">Visual preview restricted by Meta API permissions.</p>
-                </div>
-              `}
-            </div>
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+            </span>
+            <span class="text-xs text-slate-400">Library ID: ${ad.id}</span>
           </div>
 
-          <!-- Platform Footer -->
-          <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-            <span>Platforms: ${ad.platforms.join(', ')}</span>
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">${ad.pageName}</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Launched on ${new Date(ad.creationTime).toLocaleDateString()}</p>
+          </div>
+
+          <div class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 max-h-40 overflow-y-auto whitespace-pre-line">
+            ${ad.bodyText}
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-400">Target: Bangladesh (BD)</span>
+            <a href="${ad.snapshotUrl}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1">
+              View Meta Creative <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            </a>
           </div>
 
         </div>
