@@ -47,12 +47,9 @@ app.get('/api/ads/:brandKey', async (req, res) => {
       pageName: ad.page_name || brandConfig.name,
       pageId: ad.page_id,
       creationTime: ad.ad_creation_time,
-      bodyText: ad.ad_creative_bodies ? ad.ad_creative_bodies[0] : 'No caption text available.',
+      bodyText: ad.ad_creative_bodies ? ad.ad_creative_bodies[0] : 'No text copy available.',
       snapshotUrl: ad.ad_snapshot_url,
-      // Direct Web Library URL fallback for reliable snapshot loading
-      directLibraryUrl: `https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=BD&view_all_page_id=${ad.page_id}`,
-      platforms: ad.publisher_platforms || ['facebook', 'instagram'],
-      brandPageUrl: `https://www.facebook.com/${ad.page_id}`
+      platforms: ad.publisher_platforms || ['facebook', 'instagram']
     }));
 
     res.json({ success: true, count: formattedAds.length, ads: formattedAds });
