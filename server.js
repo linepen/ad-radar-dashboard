@@ -5,7 +5,9 @@ const path = require('path');
 
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
 // Read token securely from server environment settings
 const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
@@ -63,10 +65,10 @@ app.get('/api/ads/:brandKey', async (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
